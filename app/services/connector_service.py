@@ -11,7 +11,8 @@ class ConnectorService:
     SUPPORTED_TYPES = {
         "crm",
         "salesforce",
-        "database"
+        "database",
+        "erp"
     }
 
     

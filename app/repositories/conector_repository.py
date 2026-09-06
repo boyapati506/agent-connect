@@ -9,7 +9,7 @@ class ConnectorRepository:
     def save(self, connector: ConnectorEntity):
         self.db.add(connector)
         self.db.commit()
-        self.db.refresh(connector)
+        #self.db.refresh(connector)
         return connector
 
     def find_all(self) -> list[ConnectorEntity]:
