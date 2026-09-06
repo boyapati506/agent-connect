@@ -1,6 +1,10 @@
 from app.schemas.connector import (ConnectorResponse,ConnectorCreateRequest)
+from app.repositories.conector_repository import ConnectorRepository
 
 class ConnectorService:
+
+    def __init__(self,repository : ConnectorRepository):
+        self.repository = repository
 
     SUPPORTED_TYPES = {
         "crm",
@@ -13,22 +17,14 @@ class ConnectorService:
 
         if request.type not in self.SUPPORTED_TYPES:
             raise ValueError(f"unsupported connector type {request.type}")
-        
-        return ConnectorResponse(
-            name = request.name,
-            type = request.type
-        )
 
-    def get_connectors(self) -> list :
-        return [
-                ConnectorResponse(
-                    name="salesforce",
-                    type="crm",
-                    status="ACTIVE"
-                ),
-                ConnectorResponse(
-                    name="servicenow",
-                    type="itsm",
-                    status="ACTIVE"
-                )
-            ]
+        connector = ConnectorResponse(
+            name=request.name,
+            type=request.type,
+            status="ACTIVE",
+        )
+        
+        return self.repository.save(connector)
+
+    def get_connectors(self) -> list[ConnectorResponse] :
+        return self.repository.find_all()
