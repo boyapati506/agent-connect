@@ -1,10 +1,16 @@
-from app.schemas.connector import (ConnectorCreateRequest,ConnectorResponse,ConnectorBase)
-from typing import Protocol
+from app.models.connector import ConnectorEntity
+from sqlalchemy.orm import Session
 
-class ConnectorRepository(Protocol):
+class ConnectorRepository:
 
-    def save(self, connector: ConnectorCreateRequest):
-        ...
+    def __init__(self,db:Session):
+        self.db = db
 
-    def find_all(self):
-       ...
+    def save(self, connector: ConnectorEntity):
+        self.db.add(connector)
+        self.db.commit()
+        self.db.refresh(connector)
+        return connector
+
+    def find_all(self) -> list[ConnectorEntity]:
+       return (self.db.query(ConnectorEntity).all())

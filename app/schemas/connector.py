@@ -9,5 +9,5 @@ class ConnectorCreateRequest(ConnectorBase):
     pass
 
 class ConnectorResponse(ConnectorBase):
-    id: str | None = None
+    id: int | None = None
     status: str
