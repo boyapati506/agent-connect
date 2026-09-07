@@ -11,7 +11,7 @@ from app.graph.nodes.check_tool_calls_node import checK_tool_calls_node
 from app.graph.nodes.rejection_node import rejection_node
 from langgraph.checkpoint.postgres import PostgresSaver
 from app.db.database import LANGGRAPH_DATABASE_URL
-
+from langgraph.types import RetryPolicy
 
 
 #check_pointer = InMemorySaver()
@@ -25,7 +25,7 @@ def build_agent_graph(
         graph =  StateGraph(AgentState)
         agent_node = build_agent_node(model_with_tool=model_with_tool)
         tool_node = build_tool_node(tool_registry=tool_registry)
-        graph.add_node("agent",agent_node)
+        graph.add_node("agent",agent_node,retry_policy=RetryPolicy(max_attempts=3))
         graph.add_node("tools",tool_node)
         graph.add_node("approval",approval_node)
         graph.add_node("check_tool_call",checK_tool_calls_node)
