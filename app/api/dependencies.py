@@ -10,6 +10,7 @@ from app.services.llm_service import LLMService
 from app.llm.model_factory import get_model
 from app.tools.registry import ToolRegistry
 from app.tools.connector_tools import build_list_connectors_tool
+from app.graph.agent_graph import build_agent_graph
 
 def get_db() -> Generator[Session,None,None]:
     db= SessionLocal()
@@ -36,4 +37,8 @@ def tool_registry( connector_service :ConnectorService = Depends(get_connector_s
 
 def get_llm_service(tool_registry:ToolRegistry = Depends(tool_registry)) -> LLMService:
     model = get_model()
-    return LLMService(model,tool_registry)
+    model_with_tools = model.bind_tools(
+        tool_registry.get_all()
+    )
+    agent_graph = build_agent_graph(tool_registry=tool_registry,model_with_tool=model_with_tools)
+    return LLMService(agent_graph)
