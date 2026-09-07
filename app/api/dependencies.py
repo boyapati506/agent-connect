@@ -11,6 +11,7 @@ from app.llm.model_factory import get_model
 from app.tools.registry import ToolRegistry
 from app.tools.connector_tools import build_list_connectors_tool
 from app.graph.agent_graph import build_agent_graph
+from fastapi import Request
 
 def get_db() -> Generator[Session,None,None]:
     db= SessionLocal()
@@ -35,10 +36,16 @@ def tool_registry( connector_service :ConnectorService = Depends(get_connector_s
     registry.register(list_connector_tools)
     return registry
 
-def get_llm_service(tool_registry:ToolRegistry = Depends(tool_registry)) -> LLMService:
+def get_check_pointer(request: Request):
+    return request.app.state.check_pointer
+
+def get_llm_service(tool_registry:ToolRegistry = Depends(tool_registry), check_pointer = Depends(get_check_pointer),) -> LLMService:
     model = get_model()
     model_with_tools = model.bind_tools(
         tool_registry.get_all()
     )
-    agent_graph = build_agent_graph(tool_registry=tool_registry,model_with_tool=model_with_tools)
+    agent_graph = build_agent_graph(tool_registry=tool_registry,model_with_tool=model_with_tools, check_pointer=check_pointer)
     return LLMService(agent_graph)
+
+
+
