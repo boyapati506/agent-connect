@@ -8,4 +8,4 @@ llm_router = APIRouter(prefix="/llm",tags=["llm"])
 
 @llm_router.post(path="/ask")
 def call_llm(request: AgentRequest,llm_service:LLMService = Depends(get_llm_service)):
-    return {"response":llm_service.ask(request.message)}
+    return {"response":llm_service.ask(request.message,[])}
