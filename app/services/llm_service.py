@@ -7,19 +7,42 @@
 # from langchain_core.messages import ToolMessage
 
 from langchain_core.messages import HumanMessage
-
-
+from langgraph.types import Command
 
 class LLMService:
 
     def __init__(self,agent_graph):
         self.agent_graph=agent_graph
 
-    def ask(self,user_input:str):
-        result=self.agent_graph.invoke({
+    def ask(self,user_input:str,thread_id:str):
+        print("USER INPUT:", user_input)
+        print("THREAD ID:", thread_id)
+
+        result=self.agent_graph.invoke(        
+            {
             "messages":HumanMessage(content=user_input)
-        })
+            },
+            config={
+                "configurable":{
+                    "thread_id": thread_id
+                },
+                "recursion_limit":10
+            }
+        )
         return result["messages"][-1].content   
+
+    def approve(self, thread_id: str,approve:bool):
+        result = self.agent_graph.invoke(
+            Command(resume=approve),
+            config={
+                "configurable": {
+                    "thread_id": thread_id
+                },
+                "recursion_limit": 10
+            }
+        )
+
+        return result
 
     #MAX_STEPS=5
 

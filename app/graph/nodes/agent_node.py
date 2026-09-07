@@ -6,5 +6,7 @@ def build_agent_node(model_with_tool:BaseChatModel):
         response = model_with_tool.invoke(
             state["messages"]
         )
+        print("AI CONTENT:", response.content)
+        print("TOOL CALLS:", response.tool_calls)
         return {"messages":response}
     return agent_node
