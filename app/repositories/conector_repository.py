@@ -14,3 +14,6 @@ class ConnectorRepository:
 
     def find_all(self) -> list[ConnectorEntity]:
        return (self.db.query(ConnectorEntity).all())
+
+    def find_by_connector_name(self,name:str) -> ConnectorEntity:
+        return self.db.query(ConnectorEntity).filter(ConnectorEntity.name == name).first()

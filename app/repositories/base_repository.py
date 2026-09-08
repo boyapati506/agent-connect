@@ -8,3 +8,6 @@ class BaseRepository(Protocol):
 
     def find_all(self):
        ...
+
+    def find_by_connector_name(self,name:str):
+        ...   

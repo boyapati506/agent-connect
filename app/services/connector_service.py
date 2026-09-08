@@ -48,3 +48,9 @@ class ConnectorService:
         )
         )
         return result
+
+    def get_connector_by_name(self,name:str) -> dict:
+        connector = self.repository.find_by_connector_name(name)
+        if not connector:
+            return {"message":f"connector with name {name} not found"}
+        return connector.__dict__
