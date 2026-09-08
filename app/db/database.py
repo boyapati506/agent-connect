@@ -22,7 +22,7 @@ DATABASE_URL = (
     f"{os.getenv('DB_PORT')}/"
     f"{os.getenv('DB_NAME')}"
 )
-print(DATABASE_URL)
+
 
 engine = create_engine(DATABASE_URL,echo=True)
 
